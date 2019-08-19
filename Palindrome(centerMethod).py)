@@ -1,0 +1,15 @@
+from math import floor
+
+def palindrome(s):
+    n = len(s)
+    center = floor(n/2)
+    
+    s1 = s[ : center]
+    if n % 2 == 0:
+        s2 = s[center : ]
+    else:
+        s2 = s[center + 1: ]
+    
+    return s1 == s2[::-1]
+    
+print(palindrome("redder"))
