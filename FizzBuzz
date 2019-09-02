@@ -1,0 +1,14 @@
+def fizzbuzzz(n):
+    mapping = {3: "Fizz", 5: "Buzz"}
+    _str = ""
+    result = []
+    
+    for i in range(1, n+1):
+        for key, val in mapping.items():
+            if i % key == 0:
+                _str += val
+        result.append(_str) if _str else result.append(i)
+        _str = ""
+    return result
+    
+print(fizzbuzzz(15))
