@@ -1,0 +1,210 @@
+1. Min stack
+
+class MinStack:
+
+    def __init__(self):
+        """
+        initialize your data structure here.
+        """
+        self.stack = []
+        
+
+    def push(self, x: int) -> None:
+        self.stack.append(x)
+        # print(self.stack)
+        
+
+    def pop(self) -> None:
+        x = self.stack.pop()
+        return x
+
+    def top(self) -> int:
+        x = self.stack[len(self.stack)-1]
+        return x
+
+    def getMin(self) -> int:
+        x = min(self.stack)
+        return x
+        
+===========================================================================================================
+
+2. Valid Parentheses
+
+class Solution(object):
+    def isValid(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+        if len(s) % 2 != 0:
+            return False
+        stack = []
+        mappings = {
+            ')' : '(',
+            '}' : '{',
+            ']' : '['
+        }
+        
+        for char in s:
+            if char not in mappings:
+                stack.append(char)
+            else:
+                top = stack.pop() if stack else '#'
+                
+                if mappings[char] != top:
+                    return False
+        return not stack
+        
+==============================================================================================================================
+
+3.   Daily Temperatures
+
+class Solution(object):
+    def dailyTemperatures(self, T):
+        """
+        :type T: List[int]
+        :rtype: List[int]
+        """
+        ans = [0] * len(T)
+        stack = []
+        
+        for i, t in enumerate(T):
+            while stack and T[stack[-1]] < t:    
+                curr = stack.pop()
+                ans[curr] = i - curr
+            stack.append(i)
+        
+        return ans
+        
+==============================================================================================================
+
+4.   Evaluate Reverse Polish Notation
+class Solution:
+    def evalRPN(self, tokens: List[str]) -> int:
+        stack = []
+        operators = ["+", "-", "/", "*"]
+        
+        for char in tokens:
+            
+            if char not in operators:
+                stack.append(int(char))
+            else:
+                operand2 = int(stack.pop())
+                operand1 = int(stack.pop())
+                
+                if char == '+':
+                    stack.append(operand1 + operand2)
+                    # print(stack)
+                if char == '-':
+                    stack.append(operand1 - operand2)
+                    # print(stack)
+                if char == '*':
+                    stack.append(operand1 * operand2)
+                    # print(stack)
+                if char == '/':
+                    stack.append(operand1 / operand2)
+                    # print(stack)
+                    
+        return int(stack.pop())
+        
+========================================================================================================
+
+5. Number of Islands
+class Solution:
+    def changeLandToWater(self, grid, i, j):
+        if i < 0 or i >= len(grid) or j < 0 or j >= len(grid[0]) or grid[i][j] != '1':
+        # if i<0 or j<0 or i>=len(grid) or j>=len(grid[0]) or grid[i][j] != '1':
+            return
+        grid[i][j] = 0
+        self.changeLandToWater(grid, i+1, j)
+        self.changeLandToWater(grid, i-1, j)
+        self.changeLandToWater(grid, i, j+1)
+        self.changeLandToWater(grid, i, j-1)
+    
+    def numIslands(self, grid: List[List[str]]) -> int:
+        islands = 0
+        for i in range(0, len(grid)):
+            for j in range(0, len(grid[0])):
+                if grid[i][j] == '1':
+                    islands += 1
+                    self.changeLandToWater(grid, i, j)
+        return islands
+====================================================================================================================
+
+6.   Decode String
+class Solution:
+    def constructstr(self, stack):
+        substr = ""
+        top = ""
+        while top != '[':
+            top = stack.pop()
+            if top != '[':
+                substr = top + substr
+        num = ""
+        while stack and stack[-1].isdigit():
+            top = stack.pop()
+            num = top + num
+        return substr, num, stack
+    
+    def decodeString(self, s):
+        stack = []
+        substr = ""
+        
+        for ch in s:
+            if ch != ']':
+                stack.append(ch)
+            else:
+                substr, times, stack = self.constructstr(stack)
+                stack.append(int(times) * substr)
+        
+        return "".join(stack)
+ ==========================================================================================================================
+ 7.   Flood Fill
+class Solution:
+    def changeColor(self, image, i, j, newColor, oldColor):
+        if i < 0 or j< 0 or i >= len(image) or j >= len(image[0]) or image[i][j] != oldColor or image[i][j] == newColor:
+            return
+        image[i][j] = newColor
+        self.changeColor(image, i+1, j, newColor, oldColor)
+        self.changeColor(image, i-1, j, newColor, oldColor)
+        self.changeColor(image, i, j+1, newColor, oldColor)
+        self.changeColor(image, i, j-1, newColor, oldColor)
+    
+    def floodFill(self, image: List[List[int]], sr: int, sc: int, newColor: int) -> List[List[int]]:
+        oldColor = image[sr][sc]
+        if not image or newColor == oldColor:
+            return image
+        self.changeColor(image, sr, sc, newColor, oldColor)
+        return image
+        
+==================================================================================================================
+8.   01 Matrix
+class Solution:
+    def updateMatrix(self, matrix: List[List[int]]) -> List[List[int]]:
+        dist = []
+        row = len(matrix)
+        col = len(matrix[0])
+        dist = [[10000] * col for _ in range(row)]
+        
+        for i in range(row):
+            for j in range(col):
+                if matrix[i][j] != 0:
+                    if i > 0:
+                        dist[i][j] = min(dist[i][j], dist[i-1][j]+1)
+                    if j > 0:
+                        dist[i][j] = min(dist[i][j], dist[i][j-1]+1)
+                else:
+                    dist[i][j] = 0
+            
+        for i in range(row-1, -1, -1):
+            for j in range(col-1, -1, -1):
+                if matrix[i][j] != 0:
+                    if i < row - 1:
+                        dist[i][j] = min(dist[i][j], dist[i+1][j]+1)
+                    if j < col -1:
+                        dist[i][j] = min(dist[i][j], dist[i][j+1]+1)
+                else:
+                    dist[i][j] = 0
+        return dist
+========================================================================================================
+9. 
